@@ -1,0 +1,76 @@
+/*  meterpost.css */
+
+.jumbotron.meterpost-background {
+    background: url("../img/meterpost.jpg") bottom center no-repeat;
+}
+.jumbotron.meterpost-background,
+.jumbotron.meterpost-background small {
+    color: #fff;
+}
+
+ul.nav.graph-content-buttons {
+    display: inline-block;
+}
+
+.dataseries-gauge-container {
+    margin: 20px 20px;
+    border: 1px solid #F8F8F8;
+    border-radius: 7px 7px;
+    min-width: 300px;
+}
+
+.dataseries-gauge-container .gauge {
+    width: 300px;
+    height: 220px;
+}
+
+.dataseries-gauge-container:hover {
+    background-color: #F8F8F8;
+}
+
+.dataseries-chart {
+    min-height: 480px;
+}
+
+.dataseries-chart svg {
+    min-height: 480px;
+}
+
+.dataseries-chart svg .tick text {
+    font-size: 0.7em;
+}
+
+.dataseries-chart g.nv-background {
+    border: 1px solid #F8F8F8;
+}
+
+.dataseries-chart svg text.nv-axislabel {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.nv-y .nv-axis text.nv-axislabel {
+    transform: rotate(-90deg);
+    }
+
+.breadcrumbs {
+    margin-bottom: 25px;
+}
+
+.breadcrumbs ul {
+    list-style: none;
+    padding: 0 0;
+    margin: 0 0;
+}
+
+.breadcrumbs ul li {
+    display: inline-block;
+}
+
+.breadcrumbs ul li:after {
+    content: " > ";
+}
+
+.breadcrumbs ul li:last-child:after {
+    content: "";
+}
