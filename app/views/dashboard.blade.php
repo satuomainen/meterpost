@@ -30,7 +30,7 @@
                                         data-label="{{ $dashboardSummaries[$i]->label }}">
                                 </div>
                             </div>
-                            <p>{{ $dashboardSummaries[$i]->description }}</p>
+                            <p class="dataseries-description">{{ $dashboardSummaries[$i]->description }}</p>
                         </div>
                     </a>
                 </div>

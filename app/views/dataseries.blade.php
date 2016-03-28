@@ -27,7 +27,7 @@
                     <a href="{{ URL::action('ReadingController@getDataseriesAverages', $dataseries->id) }}" class="graph-content-selector">{{ trans('messages.daily.averages') }}</a>
                 </li>
             </ul>
-            <a class="btn btn-primary pull-right" href="{{ URL::action('ReadingController@getDataseriesAsCsv', $dataseries->id) }}">{{ trans('messages.download.dataseries.csv') }}</a>
+            <a class="btn btn-primary pull-right hidden-xs" href="{{ URL::action('ReadingController@getDataseriesAsCsv', $dataseries->id) }}">{{ trans('messages.download.dataseries.csv') }}</a>
         </div>
 
         @if (!isset($dataseries))

@@ -19,6 +19,13 @@ ul.nav.graph-content-buttons {
     min-width: 300px;
 }
 
+.dataseries-gauge-container .dataseries-description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 12px 12px;
+}
+
 .dataseries-gauge-container .gauge {
     width: 300px;
     height: 220px;
