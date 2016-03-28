@@ -92,6 +92,9 @@
                     .axisLabelDistance(15)
                     .tickFormat(function(stamp) {
                         var format = d3.time.format('%Y-%m-%d %X');
+                        if (typeof(stamp) === 'string') {
+                            stamp = parseInt(stamp);
+                        }
                         return format(new Date(stamp));
                     })
                     .staggerLabels(true);
