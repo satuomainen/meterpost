@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
 | Register The Artisan Commands
@@ -11,3 +13,5 @@
 |
 */
 
+Artisan::add(new SqliteCreateDbCommand());
+Artisan::add(new SqliteDeleteDbCommand());

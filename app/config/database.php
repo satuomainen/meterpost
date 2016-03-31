@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'default' => 'mysql',
+	'default' => $_ENV['DB_CONFIG'],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -49,6 +49,12 @@ return array(
 		'sqlite' => [
 			'driver'   => 'sqlite',
 			'database' => storage_path('database.sqlite'),
+			'prefix'   => '',
+		],
+
+		'sqlite.dbtest' => [
+			'driver'   => 'sqlite',
+			'database' => storage_path('dbtest.sqlite'),
 			'prefix'   => '',
 		],
 
