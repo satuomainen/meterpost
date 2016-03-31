@@ -1,6 +1,6 @@
 <?php
 
-class TestCase extends \Illuminate\Foundation\Testing\TestCase {
+class IntegrationTestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 	/**
 	 * Creates the application.

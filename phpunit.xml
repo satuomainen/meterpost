@@ -10,6 +10,29 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_DEBUG" value="true"/>
+        <env name="APP_KEY" value="abbabaab"/>
+        <env name="TIMEZONE" value="Europe/Helsinki"/>
+        <env name="APP_LANGUAGE" value="fi"/>
+        <env name="DB_CONFIG" value="sqlite.dbtest"/>
+        <env name="DB_HOST" value="localhost"/>
+        <env name="DB_DATABASE" value="abba"/>
+        <env name="DB_USERNAME" value="baab"/>
+        <env name="DB_PASSWORD" value="abab"/>
+        <env name="CACHE_DRIVER" value="file"/>
+        <env name="SESSION_DRIVER" value="file"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="MAIL_DRIVER" value="smtp"/>
+        <env name="MAIL_HOST" value="mailtrap.io"/>
+        <env name="MAIL_PORT" value="2525"/>
+        <env name="MAIL_USERNAME" value="null"/>
+        <env name="MAIL_PASSWORD" value="null"/>
+        <env name="MAIL_ENCRYPTION" value="null'name"/>
+    </php>
+
     <testsuites>
         <testsuite name="Application Test Suite">
             <directory>./app/tests/</directory>
