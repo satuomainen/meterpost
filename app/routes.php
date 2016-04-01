@@ -18,3 +18,5 @@ Route::resource('dataseries', 'DataseriesController');
 Route::get('dataseries/{id}/reading/csv', 'ReadingController@getDataseriesAsCsv');
 Route::get('dataseries/{id}/reading/averages', 'ReadingController@getDataseriesAverages');
 Route::resource('dataseries.reading', 'ReadingController');
+
+Route::post('series/{id}/add', 'LegacyController@storeReading');

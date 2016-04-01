@@ -119,6 +119,29 @@ class ReadingResourceTest extends DbIntegrationTestCase {
         throw new UnexpectedValueException("No dataseries are available. Has the database been seeded for tests?");
     }
 
+    public function testPostNewReadingToLegacyApiSuccess() {
+        $dataseries = $this->getRandomDataseries();
+        $dataseriesIdColumnName = DataseriesService::getForeignKeyColumnName(Dataseries::TABLE_NAME);
+
+        $existingReadings = DB::table(Reading::TABLE_NAME)
+            ->addSelect('id')
+            ->where($dataseriesIdColumnName, '=', $dataseries->id)
+            ->count();
+
+        $newReading = $this->createSampleReading($dataseries->api_key);
+
+        $crawler = $this->client->request('POST', '/series/' . $dataseries->id . '/add', $newReading);
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $newReadings = DB::table(Reading::TABLE_NAME)
+            ->addSelect('id')
+            ->where($dataseriesIdColumnName, '=', $dataseries->id)
+            ->count();
+
+        $this->assertEquals($existingReadings + 1, $newReadings);
+    }
+
     private function createSampleReading($apikey) {
         return array(
             'api_key' => $apikey,
