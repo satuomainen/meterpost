@@ -6,6 +6,8 @@ class DataseriesSeeder extends Seeder {
     const SAMPLE_READING_MIN = 0;
     const SAMPLE_READING_MAX = 100;
 
+    const SAMPLE_API_KEY = 'c3365fc720c57f5ef987022b716b2957';
+
     /**
      * @var DataseriesService $dataseriesService
      */
@@ -20,22 +22,22 @@ class DataseriesSeeder extends Seeder {
         array(
             "name" => "Murkiness",
             "description" => "Resistance to the passage of light",
-            "api_key" => "c3365fc720c57f5ef987022b716b2957"
+            "api_key" => self::SAMPLE_API_KEY
         ),
         array(
             "name" => "Enjoyment",
             "description" => "Human joy at a task",
-            "api_key" => "c3365fc720c57f5ef987022b716b2957"
+            "api_key" => self::SAMPLE_API_KEY
         ),
         array(
             "name" => "Widthitude",
             "description" => "Disposition of girth",
-            "api_key" => "c3365fc720c57f5ef987022b716b2957"
+            "api_key" => self::SAMPLE_API_KEY
         ),
         array(
             "name" => "Amplification",
             "description" => "Change in enjoyment as a function of widthitude",
-            "api_key" => "c3365fc720c57f5ef987022b716b2957"
+            "api_key" => self::SAMPLE_API_KEY
         )
     );
 
@@ -69,7 +71,7 @@ class DataseriesSeeder extends Seeder {
                 "created_at" => $createdAt,
                 "updated_at" => $createdAt
             ));
-            $creationTime->modify('+5 minute');
+            $creationTime->modify('+5 hour');
         }
     }
 }

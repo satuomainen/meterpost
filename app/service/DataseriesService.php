@@ -159,17 +159,20 @@ class DataseriesService {
         $dataseriesIdColumnName = $this->getForeignKeyColumnName(Dataseries::TABLE_NAME);
 
         $readings = DB::table(Reading::TABLE_NAME)
-            ->addSelect(new Expression('UNIX_TIMESTAMP(created_at)*1000 AS x'))
-            ->addSelect(new Expression('value AS y'))
             ->where($dataseriesIdColumnName, '=', $dataseriesId)
             ->where('created_at', '>=', $fromTime->getTimestamp())
             ->orderBy('created_at', 'DESC')
             ->limit(500)
-            ->get();
+            ->get(['created_at', 'value']);
+
+        $readingData = [];
+        foreach (array_reverse($readings) as $key => $row) {
+            $readingData[] = array('x' => strtotime($row->created_at) * 1000, 'y' => $row->value);
+        }
 
         return array(
             'dataseriesId' => $dataseriesId,
-            'readings' => array_reverse($readings));
+            'readings' => $readingData);
     }
 
     /**
@@ -254,7 +257,7 @@ class DataseriesService {
         return DB::raw($query);
     }
 
-    private function getForeignKeyColumnName($tableName) {
+    public static function getForeignKeyColumnName($tableName) {
         return $tableName . "_id";
     }
 

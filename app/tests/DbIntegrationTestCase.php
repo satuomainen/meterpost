@@ -9,6 +9,10 @@ class DbIntegrationTestCase extends IntegrationTestCase {
         Artisan::call('migrate');
     }
 
+    public static function seedDatabase() {
+        Artisan::call('db:seed');
+    }
+
     public static function tearDownDatabase() {
         Artisan::call(SqliteDeleteDbCommand::COMMAND_NAME);
     }
