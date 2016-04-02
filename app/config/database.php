@@ -66,7 +66,7 @@ return array(
 			'password'  => $_ENV['DB_PASSWORD'],
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
-			'prefix'    => 'mp_',
+			'prefix'    => $_ENV['DB_PREFIX'],
 			'strict'    => false,
 		],
 
