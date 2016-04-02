@@ -252,7 +252,7 @@ class DataseriesService {
                     WHERE  created_at >= :startTime2
                     GROUP BY {$dataseriesIdColumnName}
                 ) AS minmax ON (minmax.{$dataseriesIdColumnName} = r.{$dataseriesIdColumnName})
-            WHERE r.created_at >= :startTime3 ";
+            WHERE r.created_at >= :startTime3 ORDER BY r.{$dataseriesIdColumnName} ";
 
         return DB::raw($query);
     }
