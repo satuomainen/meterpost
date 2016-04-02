@@ -57,7 +57,7 @@ class ReadingController extends BaseController {
      * @return Response
      */
     public function create() {
-        return ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -95,7 +95,7 @@ class ReadingController extends BaseController {
      * @internal param int $id
      */
     public function show($dataseriesId, $readingId) {
-        ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -124,7 +124,7 @@ class ReadingController extends BaseController {
      * @return Response
      */
     public function edit($id) {
-        return ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**

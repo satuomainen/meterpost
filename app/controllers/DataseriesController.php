@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Response;
+
 class DataseriesController extends BaseController {
 
     /**
@@ -17,7 +19,7 @@ class DataseriesController extends BaseController {
      * @return Response
      */
     public function index() {
-        return ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -26,7 +28,7 @@ class DataseriesController extends BaseController {
      * @return Response
      */
     public function create() {
-        return ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -63,7 +65,7 @@ class DataseriesController extends BaseController {
      * @return Response
      */
     public function edit($id) {
-        return ResponseHelper::notImplementedResponse();
+        App::abort(Response::HTTP_NOT_FOUND);
     }
 
     /**

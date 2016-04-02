@@ -12,4 +12,8 @@ return array(
     "welcome.message"   => "Meterpost vastaanottaa ja tallentaa havaintoja kotikutoisista Internettin kytketyistä laitteistasi",
     "no.dataseries"     => "Ei mittauksia",
     "download.dataseries.csv" => "Lataa havainnot CSV-tiedostona",
+
+    "error.title"       => "Auts!",
+    "error.not.found"   => "Etsimääsi sivua ei löytynyt...",
+    "to.dashboard"      => "Etusivulle",
 );
