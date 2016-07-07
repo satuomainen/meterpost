@@ -34,7 +34,35 @@ class DataseriesService {
 
         $reading->save();
 
+        $this->updateDataseriesSummary($dataseriesId, $value);
+
         return $reading;
+    }
+
+    /**
+     * Keep the dashboard statistics in shape by updating the summary record for
+     * this dataseries.
+     *
+     * @param $dataseriesId
+     * @param $value
+     */
+    public function updateDataseriesSummary($dataseriesId, $value) {
+        $dataseriesIdColumnName = $this->getForeignKeyColumnName(Dataseries::TABLE_NAME);
+        $rows = DataseriesSummary::where($dataseriesIdColumnName, '=', $dataseriesId)->get();
+        if ($rows->isEmpty()) {
+            $dataseriesSummary = new DataseriesSummary();
+            $dataseriesSummary->current_value = $value;
+            $dataseriesSummary->min_value = $value;
+            $dataseriesSummary->max_value = $value;
+            $dataseriesSummary[$dataseriesIdColumnName] = $dataseriesId;
+        }
+        else {
+            $dataseriesSummary = $rows[0];
+            $dataseriesSummary->current_value = $value;
+            $dataseriesSummary->min_value = $value < $dataseriesSummary->min_value ? $value : $dataseriesSummary->min_value;
+            $dataseriesSummary->max_value = $value > $dataseriesSummary->max_value ? $value : $dataseriesSummary->max_value;
+        }
+        $dataseriesSummary->save();
     }
 
     /**
@@ -57,19 +85,21 @@ class DataseriesService {
             $startTime->modify('-30 days');
         }
 
-        $dataseriesSummaryQuery = $this->getDataseriesSummaryQuery();
-
-        // Apparently "you cannot use a named parameter marker of the same name more
-        // than once in a prepared statement". http://php.net/manual/en/pdo.prepare.php
-        $queryParameters = array(
-            'startTime1' => $startTime->getTimestamp(),
-            'startTime2' => $startTime->getTimestamp(),
-            'startTime3' => $startTime->getTimestamp()
-        );
-
-        $results = DB::select($dataseriesSummaryQuery, $queryParameters);
-
-        return $results;
+        $dataseriesIdColumnName = $this->getForeignKeyColumnName(Dataseries::TABLE_NAME);
+        $dataseriesTableName = $this->getPrefixedTableName(Dataseries::TABLE_NAME);
+        $dataseriesSummaryTableName = $this->getPrefixedTableName(DataseriesSummary::TABLE_NAME);
+        $query = "
+            SELECT 
+                d.id AS id,
+                d.name AS name,
+                d.label AS label,
+                d.description AS description,
+                s.current_value AS current_value,
+                s.min_value AS min_value,
+                s.max_value AS max_value
+            FROM {$dataseriesTableName} d
+            INNER JOIN {$dataseriesSummaryTableName} s ON s.{$dataseriesIdColumnName} = d.id ";
+        return DB::select($query);
     }
 
     /**
@@ -214,54 +244,57 @@ class DataseriesService {
     }
 
     /**
-     * This query has been tested with MySQL only. It might need changes to get it working with
-     * other databases.
+     * Get summary rows for all data series. Normally the summary rows are kept up to date
+     * when inserting new values. 
      *
-     * Requires optimization if there are a lot of dataseries in the system.
-     *
-     * @return mixed The query for getting the summaries
+     * @return array
      */
-    private function getDataseriesSummaryQuery() {
-        $dataseriesIdColumnName = $this->getForeignKeyColumnName(Dataseries::TABLE_NAME);
-        $readingTableName = $this->getPrefixedTableName(Reading::TABLE_NAME);
-        $dataseriesTableName = $this->getPrefixedTableName(Dataseries::TABLE_NAME);
+    public static function getSummaryRows() {
+        $dataseriesIdColumnName = DataseriesService::getForeignKeyColumnName(Dataseries::TABLE_NAME);
+        $readingTableName = DataseriesService::getPrefixedTableName(Reading::TABLE_NAME);
 
         $query = "
             SELECT
-                r.{$dataseriesIdColumnName} AS id,
-                s.name AS name,
-                s.description AS description,
-                s.label AS label,
-                CAST(r.value AS DECIMAL(20,5)) AS current_value,
-                CAST(minmax.minval AS DECIMAL(20,5)) AS min_value,
-                CAST(minmax.maxval AS DECIMAL(20,5)) AS max_value
+             r.{$dataseriesIdColumnName} AS id,
+             CAST(r.value AS DECIMAL(20,5)) AS current_value,
+             CAST(minmax.minval AS DECIMAL(20,5)) AS min_value,
+             CAST(minmax.maxval AS DECIMAL(20,5)) AS max_value
             FROM {$readingTableName} r
-            INNER JOIN {$dataseriesTableName} s ON (s.id = r.{$dataseriesIdColumnName})
+            INNER JOIN {$readingTableName} s ON (s.id = r.{$dataseriesIdColumnName})
             INNER JOIN (
-                    SELECT t.{$dataseriesIdColumnName} AS {$dataseriesIdColumnName}, MAX(t.created_at) AS created_at
-                    FROM   {$readingTableName} t
-                    WHERE  t.created_at >= :startTime1
-                    GROUP BY t.${dataseriesIdColumnName}
-                ) AS u ON u.{$dataseriesIdColumnName} = r.{$dataseriesIdColumnName} AND u.created_at = r.created_at
+                 SELECT t.{$dataseriesIdColumnName} AS {$dataseriesIdColumnName}, MAX(t.created_at) AS created_at
+                 FROM   {$readingTableName} t
+                 GROUP BY t.{$dataseriesIdColumnName}
+             ) AS u ON u.{$dataseriesIdColumnName} = r.{$dataseriesIdColumnName} AND u.created_at = r.created_at
             INNER JOIN (
-                    SELECT 
-                          {$dataseriesIdColumnName}, 
-                          MIN(CAST(value AS DECIMAL(20,5))) AS minval, 
-                          MAX(CAST(value AS DECIMAL(20,5))) AS maxval
-                    FROM   {$readingTableName}
-                    WHERE  created_at >= :startTime2
-                    GROUP BY {$dataseriesIdColumnName}
-                ) AS minmax ON (minmax.{$dataseriesIdColumnName} = r.{$dataseriesIdColumnName})
-            WHERE r.created_at >= :startTime3 ORDER BY r.{$dataseriesIdColumnName} ";
+                 SELECT 
+                       {$dataseriesIdColumnName}, 
+                       MIN(CAST(value AS DECIMAL(20,5))) AS minval, 
+                       MAX(CAST(value AS DECIMAL(20,5))) AS maxval
+                 FROM   {$readingTableName}
+                 GROUP BY {$dataseriesIdColumnName}
+             ) AS minmax ON (minmax.{$dataseriesIdColumnName} = r.{$dataseriesIdColumnName})
+            ORDER BY r.{$dataseriesIdColumnName} ";
 
-        return DB::raw($query);
+        $results = array();
+        $summaryRows = DB::select(DB::raw($query));
+        foreach ($summaryRows as $row) {
+            $result = array(
+                "{$dataseriesIdColumnName}" => $row->id,
+                'current_value' => $row->current_value,
+                'min_value' => $row->min_value,
+                'max_value' => $row->max_value
+            );
+            array_push($results, $result);
+        }
+        return $results;
     }
 
     public static function getForeignKeyColumnName($tableName) {
         return $tableName . "_id";
     }
 
-    private function getPrefixedTableName($tableName) {
+    private static function getPrefixedTableName($tableName) {
         return DB::getTablePrefix() . $tableName;
     }
 }
